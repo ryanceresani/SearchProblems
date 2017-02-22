@@ -139,8 +139,42 @@ public class SearchProblem {
 		 * IMPORTANT: Don't just call my A* Search implementation with a heuristic function that always returns 0.  Technically,
 		 * that would in fact be equivalent to Uniform Cost Search, but I want to see that you can implement Uniform Cost Search.
 		 */
+		if (goalCheck(start)) 
+			return new SearchNode(start);
 		
-				
+		// Comparator which compares the f values.  Needed for the priority queue.
+		class UCSComparator implements Comparator<SearchNode> {
+			@Override
+			public int compare(SearchNode o1, SearchNode o2) {
+				return o1.getG()-o2.getG();
+			}
+		}
+		
+		PQ<SearchNode> frontier = new PQ<SearchNode>(new UCSComparator());
+		frontier.offer(new SearchNode(start));
+		HashMap<State,Integer> visited = new HashMap<State,Integer>();
+		visited.put(start, 0);
+		
+		while(!frontier.isEmpty()){
+			SearchNode curr = frontier.poll();
+			if(goalCheck(curr.getState())){
+				return curr;
+			}
+			Collection<State> succs = curr.getState().getSuccessors();
+			for(State e : succs){
+				if(!visited.containsKey(e)){
+					SearchNode eNode = new SearchNode(e, curr);
+					visited.put(e, eNode.getG());
+					frontier.offer(eNode);
+				} else {
+					SearchNode eNode = new SearchNode(e, curr);
+					if(eNode.getG() < visited.get(e)){
+						visited.put(e, eNode.getG());
+						frontier.offer(eNode);
+					}
+				}
+			}
+		}
 		return null;
 	}
 	
