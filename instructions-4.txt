@@ -1,0 +1,34 @@
+Homework 4:
+
+1. Implement the bfs method in the SearchProblem class.  Method contains a comment with pseudocode and implementation hints.
+
+2. Implement the uniformCostSearch method in the SearchProblem class.  Method contains a comment with pseudocode and implementation hints.
+
+3. In the SearchDriver class, implement the printSolutionPath method (see its comment for details).
+
+4. Look at the main method of the SearchDriver class.  It currently has examples of how to run the various
+search algorithms, and how to get various statistics, such as number of expanded nodes, etc.
+
+5. Modify the main method of the SearchDriver class so that it does the following:
+
+5.a. Constructs an array containing at least 10 different instances of the SimpleGraphSearchProblem, but with the same parameters
+(100 nodes, edge density of 0.1, and false for the 3rd parameter).
+
+5.b. Solves each of those 10 instances with BFS, and output for each of those 10 runs, the number of state expansions, the
+length of the path found, and the cost of the path found.
+
+5.c. Do the same as 5.b, but for Uniform Cost Search.
+
+
+6. Compute (either in your code or external from your code, such as in a spreadsheet) the 
+average number of state expansions for each algorithm, the average path length found by each algorithm, and the average
+path cost found by each algorithm.
+
+7. Describe the results seen in 6.
+
+What To Submit:
+
+Submit your modified SearchProblem.java and SearchDriver.java, and your answer to number 7. 
+No other java files need to be modified, so I don't need those submitted.
+
+
