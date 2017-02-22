@@ -4,8 +4,8 @@ import java.util.Stack;
 
 /**
  * 
- * @author Your name here
- * @version the date here
+ * @author Ryan Ceresani & Tyler Sefcik
+ * @version 2/22/2017
  */
 public class SearchDriver {
 

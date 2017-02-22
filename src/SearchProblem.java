@@ -14,8 +14,8 @@ import java.util.Stack;
  * Multiple of our assignments will involve implementing search algorithms in 
  * this Java class.
  * 
- *  @author Your name goes here.
- *  @version The date goes here.
+ * @author Ryan Ceresani & Tyler Sefcik
+ * @version 2/22/2017
  */
 public class SearchProblem {
 
