@@ -1,6 +1,9 @@
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Queue;
 import java.util.Stack;
 
 
@@ -18,7 +21,7 @@ public class SearchProblem {
 
 	final private State start;
 	final private State goal;
-	
+
 	/**
 	 * Use this constructor for search problems where
 	 * there is a single start state and for which
@@ -32,7 +35,7 @@ public class SearchProblem {
 		this.start = start;
 		goal = null;
 	}
-	
+
 	/**
 	 * Constructs a search problem with specified start and
 	 * goal states.
@@ -44,16 +47,16 @@ public class SearchProblem {
 		this.start = start;
 		this.goal = goal;
 	}
-	
-	
+
+
 	/*
 	 * Helper method for checking if a State is the goal.
 	 */
 	private boolean goalCheck(State s) {
 		return goal != null && s.equals(goal) || goal == null && s.isGoalState();
 	}
-	
-		
+
+
 	/**
 	 * Breadth First Search
 	 * 
@@ -63,7 +66,7 @@ public class SearchProblem {
 	 * Returns null if the Goal was not found.
 	 */
 	public SearchNode bfs() {
-		
+
 		/*
 		 * Implement breadth first search (BFS).
 		 * 
@@ -90,11 +93,31 @@ public class SearchProblem {
 		 * -- I recommend Java's HashSet class for the visited set.  It implements the discrete math concept of a set using a
 		 * hash table.
 		 */
-		
+		if (goalCheck(start)) {
+			return new SearchNode(start);
+		}
+		Queue<SearchNode> frontier = new ArrayDeque<SearchNode>();
+		HashSet<State> visited = new HashSet<State>();
+
+		visited.add(start);
+		frontier.add(new SearchNode(start));
+
+		while (!frontier.isEmpty()) {
+			SearchNode s = frontier.poll();
+			Collection<State> succs = s.getState().getSuccessors();
+			for (State e : succs) {
+				if (goalCheck(e)) {
+					return new SearchNode(e, s);
+				} else {
+					visited.add(e);
+					frontier.add(new SearchNode(e, s));
+				}
+			}
+		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Uniform Cost Search
 	 * 
@@ -104,7 +127,7 @@ public class SearchProblem {
 	 * Returns null if the Goal was not found.
 	 */
 	public SearchNode uniformCostSearch() {
-		
+
 		/*
 		 * Implement Uniform Cost Search.
 		 * 
@@ -141,7 +164,7 @@ public class SearchProblem {
 		 */
 		if (goalCheck(start)) 
 			return new SearchNode(start);
-		
+
 		// Comparator which compares the f values.  Needed for the priority queue.
 		class UCSComparator implements Comparator<SearchNode> {
 			@Override
@@ -149,12 +172,12 @@ public class SearchProblem {
 				return o1.getG()-o2.getG();
 			}
 		}
-		
+
 		PQ<SearchNode> frontier = new PQ<SearchNode>(new UCSComparator());
 		frontier.offer(new SearchNode(start));
 		HashMap<State,Integer> visited = new HashMap<State,Integer>();
 		visited.put(start, 0);
-		
+
 		while(!frontier.isEmpty()){
 			SearchNode curr = frontier.poll();
 			if(goalCheck(curr.getState())){
@@ -177,8 +200,8 @@ public class SearchProblem {
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Depth First Search (path checking DFS)
 	 * 
@@ -188,7 +211,7 @@ public class SearchProblem {
 	 * Returns null if the Goal was not found.
 	 */
 	public SearchNode dfs() {
-		
+
 		/*
 		 * Implement depth first search (DFS).
 		 * 
@@ -211,29 +234,29 @@ public class SearchProblem {
 		 *
 		 * -- I gave you an unimplemented helper method for checking the path (see isOnPath below).  Implement that first as you will need it for 4.b.ii above. 
 		 */
-	
+
 		return null;
 	}
-	
-	
+
+
 	/*
 	 * Helper method for path-checking DFS.  Checks if a State is already in the current path.
 	 */
 	private boolean isOnPath(SearchNode pathEnd, State s) {
-		
+
 		// check if s is in node pathEnd, and if so return true.
 		// otherwise, follow the backpointers until you either find a node that contains s (in which case return true)
 		// or until you find a null backpointer (in which case return false)
-		
+
 		return false;
 	}
-	
-	
+
+
 	// HINT: for when you implement depthLimitedDFS and iterativeDeepening (will help give iterativeDeepening info on whether or not you should 
 	// increase limit further
 	private boolean didLimit; 
-							
-	
+
+
 	/**
 	 * Depth Limited DFS
 	 * 
@@ -245,14 +268,14 @@ public class SearchProblem {
 	 * Returns null if the Goal was not found.
 	 */
 	public SearchNode depthLimitedDFS(int limit) {
-		
+
 		// Implement depth limited DFS.  This is just like DFS (path checking), except ignore any states that are more than limit steps away from the start.
 		// See the comment for the didLimit field.  Technically you can ignore that and get depthLimitedDFS correct.  However, to help with
 		// iterativeDeepening below, do the following: (a) initialize didLimit to false at the start of this method, and set it to true if you discover a state
 		// beyond the limit (i.e., if depthLimitedSearch actually ignores something because it is more than limit steos from the start).
 		return null;
 	}
-	
+
 	/**
 	 * Iterative Deepening Search
 	 * 
@@ -262,22 +285,22 @@ public class SearchProblem {
 	 * Returns null if the Goal was not found.
 	 */
 	public SearchNode iterativeDeepeningSearch() {
-		
+
 		/* Implement Iterative Deepening search
-		* 
-		* PSEUDOCODE
-		*
-		* 1. Check if the start state is the goal.  If the start is the goal, then return a SearchNode containing the start.
-		* 2. Initialize limit to 1.
-		* 3. Perform a depthLimitedDFS, and if it solves problem, return its solution.
-		* 4. If solution not found, increase limit by 1, and go back to step 3 (repeat until either solution found or depthLimitedDFS doesn't actually limit anything).
-		* 5. If no solution found, return null.
-		*/
-		
+		 * 
+		 * PSEUDOCODE
+		 *
+		 * 1. Check if the start state is the goal.  If the start is the goal, then return a SearchNode containing the start.
+		 * 2. Initialize limit to 1.
+		 * 3. Perform a depthLimitedDFS, and if it solves problem, return its solution.
+		 * 4. If solution not found, increase limit by 1, and go back to step 3 (repeat until either solution found or depthLimitedDFS doesn't actually limit anything).
+		 * 5. If no solution found, return null.
+		 */
+
 		return null;
 	}	
-	
-	
+
+
 	/**
 	 * A* Search.
 	 * 
@@ -288,10 +311,10 @@ public class SearchProblem {
 	 * Returns null if the Goal was not found.
 	 */
 	public SearchNode AStarSearch(HeuristicFunction h) {
-		
+
 		if (goalCheck(start)) 
 			return new SearchNode(start);
-		
+
 		// A* needs f values for the priority queue.
 		// This subclass of SearchNode provides that.  Inner class since only needed here.
 		class AStarNode extends SearchNode {
@@ -306,7 +329,7 @@ public class SearchProblem {
 			}
 			public int getF() { return f; }
 		}
-		
+
 		// Comparator which compares the f values.  Needed for the priority queue.
 		class MyComparator implements Comparator<AStarNode> {
 			@Override
@@ -314,12 +337,12 @@ public class SearchProblem {
 				return o1.getF()-o2.getF();
 			}
 		}
-		
+
 		PQ<AStarNode> frontier = new PQ<AStarNode>(new MyComparator());
 		frontier.offer(new AStarNode(start));
 		HashMap<State,Integer> generated = new HashMap<State,Integer>();
 		generated.put(start,h.h(start));
-		
+
 		while (!frontier.isEmpty()) {
 			AStarNode s = frontier.poll();
 			if (goalCheck(s.getState())) return s;
@@ -338,7 +361,7 @@ public class SearchProblem {
 				}
 			}
 		}
-		
+
 		return null;
 	}
 }
