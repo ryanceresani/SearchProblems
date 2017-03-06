@@ -5,7 +5,7 @@ import java.util.Stack;
 /**
  * 
  * @author Ryan Ceresani & Tyler Sefcik
- * @version 2/22/2017
+ * @version 3/6/2017
  */
 public class SearchDriver {
 
@@ -141,6 +141,67 @@ public class SearchDriver {
 		System.out.println("\nAverage Expanded States: " + expandedStates/NUM_OF_PROBLEMS);
 		System.out.println("Average Path Length: " + pathLength/NUM_OF_PROBLEMS);
 		System.out.println("Average Cost: " + cost/NUM_OF_PROBLEMS);
+		
+		
+		State.resetStats();
+		System.out.println("\nDEPTH FIRST");
+		for (int i = 0; i < problemSet.length; i++) {
+			System.out.println();
+			System.out.println("DFS Problem #" + (i+1));
+			start = bean.getCurrentThreadCpuTime();
+			solution = problemSet[i].dfs();
+			totalTime = bean.getCurrentThreadCpuTime() - start;
+			System.out.println("Time: " + (totalTime/1000000000.0));
+			System.out.println("Expanded: " + State.getNumExpandedStates());
+			expandedStates += State.getNumExpandedStates();
+
+			if (solution != null) {
+				System.out.println("Path length: " + solution.getPathLengthToNode());
+				pathLength += solution.getPathLengthToNode();
+				System.out.println("Path cost: " + solution.getG());
+				cost += solution.getG();
+				printSolutionPath(solution);
+			} else {
+				System.out.println("No solution found");
+			}
+		}
+		System.out.println("\nAverage Expanded States: " + expandedStates/NUM_OF_PROBLEMS);
+		System.out.println("Average Path Length: " + pathLength/NUM_OF_PROBLEMS);
+		System.out.println("Average Cost: " + cost/NUM_OF_PROBLEMS);
+		
+		expandedStates = 0; 
+		pathLength = 0; 
+		cost = 0;
+		
+		State.resetStats();
+		System.out.println("\nITERATIVE DEEPENING");
+		for (int i = 0; i < problemSet.length; i++) {
+			System.out.println();
+			System.out.println("ID Problem #" + (i+1));
+			start = bean.getCurrentThreadCpuTime();
+			solution = problemSet[i].iterativeDeepeningSearch();
+			totalTime = bean.getCurrentThreadCpuTime() - start;
+			System.out.println("Time: " + (totalTime/1000000000.0));
+			System.out.println("Expanded: " + State.getNumExpandedStates());
+			expandedStates += State.getNumExpandedStates();
+
+			if (solution != null) {
+				System.out.println("Path length: " + solution.getPathLengthToNode());
+				pathLength += solution.getPathLengthToNode();
+				System.out.println("Path cost: " + solution.getG());
+				cost += solution.getG();
+				printSolutionPath(solution);
+			} else {
+				System.out.println("No solution found");
+			}
+		}
+		System.out.println("\nAverage Expanded States: " + expandedStates/NUM_OF_PROBLEMS);
+		System.out.println("Average Path Length: " + pathLength/NUM_OF_PROBLEMS);
+		System.out.println("Average Cost: " + cost/NUM_OF_PROBLEMS);
+		
+		expandedStates = 0; 
+		pathLength = 0; 
+		cost = 0;
 	}
 
 }

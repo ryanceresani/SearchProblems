@@ -15,7 +15,7 @@ import java.util.Stack;
  * this Java class.
  * 
  * @author Ryan Ceresani & Tyler Sefcik
- * @version 2/22/2017
+ * @version 3/6/2017
  */
 public class SearchProblem {
 
@@ -234,7 +234,26 @@ public class SearchProblem {
 		 *
 		 * -- I gave you an unimplemented helper method for checking the path (see isOnPath below).  Implement that first as you will need it for 4.b.ii above. 
 		 */
+		if (goalCheck(start)) 
+			return new SearchNode(start);
 
+		Stack<SearchNode> frontier = new Stack<SearchNode>();
+		frontier.push(new SearchNode(start));
+		while(!frontier.isEmpty()){
+			SearchNode s = frontier.pop();
+			Collection<State> succs = s.getState().getSuccessors();
+			for (State e : succs) {
+				if (goalCheck(e)) {
+					return new SearchNode(e, s);
+				} else {
+					if(isOnPath(s, e)){
+					}
+					else {
+						frontier.push(new SearchNode(e, s));
+					}
+				}
+			}
+		}
 		return null;
 	}
 
@@ -247,7 +266,16 @@ public class SearchProblem {
 		// check if s is in node pathEnd, and if so return true.
 		// otherwise, follow the backpointers until you either find a node that contains s (in which case return true)
 		// or until you find a null backpointer (in which case return false)
+		if(pathEnd.getState().equals(s)){
+			return true;
+		}
 
+		while(pathEnd.getBackpointer() != null){
+			pathEnd = pathEnd.getBackpointer();
+			if(pathEnd.getState().equals(s)){
+				return true;
+			}
+		}		
 		return false;
 	}
 
@@ -273,6 +301,38 @@ public class SearchProblem {
 		// See the comment for the didLimit field.  Technically you can ignore that and get depthLimitedDFS correct.  However, to help with
 		// iterativeDeepening below, do the following: (a) initialize didLimit to false at the start of this method, and set it to true if you discover a state
 		// beyond the limit (i.e., if depthLimitedSearch actually ignores something because it is more than limit steos from the start).
+		didLimit = false;
+
+		if (goalCheck(start)) 
+			return new SearchNode(start);
+
+		Stack<SearchNode> frontier = new Stack<SearchNode>();
+		frontier.push(new SearchNode(start));
+		while(!frontier.isEmpty()){
+			SearchNode s = frontier.pop();
+
+			if(s.getPathLengthToNode() == limit){
+				State last = s.getState();
+				if (goalCheck(last)) {
+					return new SearchNode(last, s);
+				}
+				didLimit = true;
+			}
+			else{
+				Collection<State> succs = s.getState().getSuccessors();
+				for (State e : succs) {
+					if (goalCheck(e)) {
+						return new SearchNode(e, s);
+					} else {
+						if(isOnPath(s, e)){
+						}
+						else {
+							frontier.push(new SearchNode(e, s));
+						}
+					}
+				}
+			}
+		}
 		return null;
 	}
 
@@ -296,8 +356,17 @@ public class SearchProblem {
 		 * 4. If solution not found, increase limit by 1, and go back to step 3 (repeat until either solution found or depthLimitedDFS doesn't actually limit anything).
 		 * 5. If no solution found, return null.
 		 */
+		if (goalCheck(start)) 
+			return new SearchNode(start);
 
-		return null;
+		int limit = 1;
+		SearchNode s = null;
+		do {
+			s = depthLimitedDFS(limit);
+			limit++;
+		} while (s == null && didLimit);
+
+		return s;
 	}	
 
 
